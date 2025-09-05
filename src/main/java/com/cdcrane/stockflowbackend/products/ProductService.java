@@ -5,8 +5,6 @@ import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.products.categories.Category;
 import com.cdcrane.stockflowbackend.products.dto.CreateProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductDTO;
-import com.cdcrane.stockflowbackend.products.enums.ProductLookupTypes;
-import com.cdcrane.stockflowbackend.products.exceptions.InvalidLookupTypeException;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,9 @@ public class ProductService implements ProductUseCase {
         Product prod = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with ID " + productId + " not found"));
 
-        return new ProductDTO(prod.getName(), prod.getFactoryName(), prod.getCategory().getName(), prod.getCategory().getId(), prod.getCreatedAt(), prod.getCreatedBy().getUsername());
+        return new ProductDTO(prod.getName(), prod.getFactoryName(), prod.getCategory().getName(), prod.getCategory().getId(),
+                prod.isGroupByWidth(), prod.isGroupByLength(), prod.isGroupByHeight(), prod.isGroupByColour(),
+                prod.getCreatedAt(), prod.getCreatedBy().getUsername());
 
     }
 
@@ -41,19 +41,15 @@ public class ProductService implements ProductUseCase {
 
         ApplicationUser currentUser = securityUtils.getCurrentAuth();
 
-        ProductLookupTypes lookupType = switch (dto.lookupType()) {
-            case "WidthLength" -> ProductLookupTypes.WidthLength;
-            case "WidthLengthColour" -> ProductLookupTypes.WidthLengthColour;
-            case "Colour" -> ProductLookupTypes.Colour;
-            default -> throw new InvalidLookupTypeException("Invalid lookup type provided.");
-        };
-
         Product product = Product.builder()
                 .category(em.getReference(Category.class, dto.categoryId()))
                 .name(dto.name())
                 .factoryName(dto.factoryName())
                 .createdBy(currentUser)
-                .lookupType(lookupType)
+                .groupByColour(dto.groupByColour())
+                .groupByHeight(dto.groupByHeight())
+                .groupByLength(dto.groupByLength())
+                .groupByWidth(dto.groupByWidth())
                 .build();
 
         productRepo.save(product);

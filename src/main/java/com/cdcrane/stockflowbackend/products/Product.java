@@ -1,7 +1,6 @@
 package com.cdcrane.stockflowbackend.products;
 
 import com.cdcrane.stockflowbackend.products.categories.Category;
-import com.cdcrane.stockflowbackend.products.enums.ProductLookupTypes;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,9 +30,13 @@ public class Product {
     @Column(name = "factory_name")
     private String factoryName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "lookup_type")
-    private ProductLookupTypes lookupType;
+    private boolean groupByWidth;
+
+    private boolean groupByLength;
+
+    private boolean groupByHeight;
+
+    private boolean groupByColour;
 
     @CreatedDate
     private Instant createdAt;
