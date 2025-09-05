@@ -50,7 +50,7 @@ public class JwtService {
                 .subject("JWT Token")
                 .claim("username", auth.getName())
                 .claim("authorities", auth.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                        .map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                 .issuedAt(new Date())
                 .expiration(expiration)
                 .signWith(secretKey)

@@ -1,0 +1,61 @@
+package com.cdcrane.stockflowbackend.products;
+
+import com.cdcrane.stockflowbackend.authentication.SecurityUtils;
+import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
+import com.cdcrane.stockflowbackend.products.categories.Category;
+import com.cdcrane.stockflowbackend.products.dto.CreateProductDTO;
+import com.cdcrane.stockflowbackend.products.dto.ProductDTO;
+import com.cdcrane.stockflowbackend.products.enums.ProductLookupTypes;
+import com.cdcrane.stockflowbackend.products.exceptions.InvalidLookupTypeException;
+import com.cdcrane.stockflowbackend.users.ApplicationUser;
+import jakarta.persistence.EntityManager;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+@Service
+public class ProductService implements ProductUseCase {
+
+    private final ProductRepository productRepo;
+    private final SecurityUtils securityUtils;
+    private final EntityManager em;
+
+    public ProductService(ProductRepository productRepository, SecurityUtils securityUtils, EntityManager em) {
+        this.productRepo = productRepository;
+        this.securityUtils = securityUtils;
+        this.em = em;
+    }
+
+    @Override
+    public ProductDTO getProductById(UUID productId) {
+
+        Product prod = productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with ID " + productId + " not found"));
+
+        return new ProductDTO(prod.getName(), prod.getFactoryName(), prod.getCategory().getName(), prod.getCategory().getId(), prod.getCreatedAt(), prod.getCreatedBy().getUsername());
+
+    }
+
+    @Override
+    public void createProduct(CreateProductDTO dto) {
+
+        ApplicationUser currentUser = securityUtils.getCurrentAuth();
+
+        ProductLookupTypes lookupType = switch (dto.lookupType()) {
+            case "WidthLength" -> ProductLookupTypes.WidthLength;
+            case "WidthLengthColour" -> ProductLookupTypes.WidthLengthColour;
+            case "Colour" -> ProductLookupTypes.Colour;
+            default -> throw new InvalidLookupTypeException("Invalid lookup type provided.");
+        };
+
+        Product product = Product.builder()
+                .category(em.getReference(Category.class, dto.categoryId()))
+                .name(dto.name())
+                .factoryName(dto.factoryName())
+                .createdBy(currentUser)
+                .lookupType(lookupType)
+                .build();
+
+        productRepo.save(product);
+    }
+}
