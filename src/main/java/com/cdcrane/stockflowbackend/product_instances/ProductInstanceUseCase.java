@@ -1,6 +1,7 @@
 package com.cdcrane.stockflowbackend.product_instances;
 
 import com.cdcrane.stockflowbackend.product_instances.dto.NewProductInstanceDTO;
+import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceCountDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,4 +13,6 @@ public interface ProductInstanceUseCase {
     Page<ProductInstance> getProductInstancesByRootProductId(UUID productId, Pageable pageable);
 
     void storeNewProductInstances(List<NewProductInstanceDTO> productInstanceDTOs);
+
+    List<ProductInstanceCountDTO> getCountsByProductId(UUID productId);
 }

@@ -1,6 +1,7 @@
 package com.cdcrane.stockflowbackend.product_instances;
 
 import com.cdcrane.stockflowbackend.product_instances.dto.NewProductInstanceDTO;
+import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceCountDTO;
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,16 +22,28 @@ public class ProductInstanceController {
     }
 
     @GetMapping("/by-root-product/{rootProdId}")
-    public Page<ProductInstanceDTO> getProductInstancesByRootProductId(@PathVariable UUID rootProdId, Pageable pageable) {
+    public ResponseEntity<Page<ProductInstanceDTO>> getProductInstancesByRootProductId(@PathVariable UUID rootProdId, Pageable pageable) {
 
         Page<ProductInstance> instances = productInstanceUseCase.getProductInstancesByRootProductId(rootProdId, pageable);
 
-        return instances.map(i ->
+        var result = instances.map(i ->
                 new ProductInstanceDTO(i.getId(), i.getProduct().getId(),
                         i.getWidth(), i.getLength(), i.getHeight(),
                         i.getColour(), i.isReserved(), i.getSavedAt()));
 
+        return ResponseEntity.ok(result);
+
     }
+
+    @GetMapping("/count-by-product/{productId}")
+    public ResponseEntity<List<ProductInstanceCountDTO>> getCountsByProductId(@PathVariable UUID productId) {
+
+        var result = productInstanceUseCase.getCountsByProductId(productId);
+
+        return ResponseEntity.ok(result);
+
+    }
+
 
     @PostMapping
     public ResponseEntity<Void> storeNewProductInstances(@RequestBody List<NewProductInstanceDTO> productInstanceDTOs) {

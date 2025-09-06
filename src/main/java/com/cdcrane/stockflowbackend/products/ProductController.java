@@ -2,6 +2,8 @@ package com.cdcrane.stockflowbackend.products;
 
 import com.cdcrane.stockflowbackend.products.dto.CreateProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +21,20 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ProductDTO getProductById(@PathVariable UUID productId) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable UUID productId) {
 
-        return productUseCase.getProductById(productId);
+        var response = productUseCase.getProductById(productId);
+
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<Page<ProductDTO>> getByCategoryId(@PathVariable UUID categoryId, Pageable pageable) {
+
+        var response = productUseCase.getByCategoryId(categoryId, pageable);
+
+        return ResponseEntity.ok(response);
 
     }
 

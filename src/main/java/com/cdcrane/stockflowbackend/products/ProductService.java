@@ -7,6 +7,8 @@ import com.cdcrane.stockflowbackend.products.dto.CreateProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductDTO;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -30,9 +32,24 @@ public class ProductService implements ProductUseCase {
         Product prod = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with ID " + productId + " not found"));
 
-        return new ProductDTO(prod.getName(), prod.getFactoryName(), prod.getCategory().getName(), prod.getCategory().getId(),
+        return new ProductDTO(prod.getId() ,prod.getName(), prod.getFactoryName(), prod.getCategory().getName(), prod.getCategory().getId(),
                 prod.isGroupByWidth(), prod.isGroupByLength(), prod.isGroupByHeight(), prod.isGroupByColour(),
                 prod.getCreatedAt(), prod.getCreatedBy().getUsername());
+
+    }
+
+    @Override
+    public Page<ProductDTO> getByCategoryId(UUID categoryId, Pageable pageable) {
+
+        Page<Product> products = productRepo.findByCategoryId(categoryId, pageable);
+
+        if(products.isEmpty()) {
+            throw new ResourceNotFoundException("No products found for category with ID " + categoryId);
+        }
+
+        return products.map(p -> new ProductDTO(p.getId(), p.getName(), p.getFactoryName(), p.getCategory().getName(),
+                p.getCategory().getId(), p.isGroupByWidth(), p.isGroupByLength(), p.isGroupByHeight(), p.isGroupByColour(),
+                p.getCreatedAt(), p.getCreatedBy().getUsername()));
 
     }
 

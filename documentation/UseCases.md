@@ -11,14 +11,14 @@ Instances of a specific furniture unit will be grouped simply by colour, since t
 # Product instances
 
 - Get the count of instances of a specific root product grouped by certain fields depending on its lookup pattern.
-- Get a list of all instances of a product, which the frontend can order as it sees fit.
-- Persist new instances by receiving a collection of instances.
+- Get a list of all instances of a product, which the frontend can order as it sees fit. **DONE**
+- Save new instances by receiving a collection of instances. **DONE**
 - When a new client order is saved, all instances that that order has claimed will be marked as reserved and provided the order ID.
 
 # Root products
 
-- Query information about a root product
-- Add a new root product
+- Query information about a root product **DONE**
+- Add a new root product **DONE**
 - Update root products
 - Delete root products
 
