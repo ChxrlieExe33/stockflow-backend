@@ -28,16 +28,12 @@ public class ProductInstance {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(nullable = true)
     private Integer width;
 
-    @Column(nullable = true)
     private Integer length;
 
-    @Column(nullable = true)
     private Integer height;
-
-    @Column(nullable = true)
+    
     private String colour;
 
     private boolean reserved;
