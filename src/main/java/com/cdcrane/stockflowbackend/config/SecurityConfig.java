@@ -20,9 +20,11 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
 public class SecurityConfig {
 
     private final JwtService jwtService;
+    private final CorsConfig corsConfig;
 
-    public SecurityConfig(JwtService jwtService) {
+    public SecurityConfig(JwtService jwtService, CorsConfig corsConfig) {
         this.jwtService = jwtService;
+        this.corsConfig = corsConfig;
     }
 
     public static final String[] PUBLIC_URIS = {
@@ -40,6 +42,8 @@ public class SecurityConfig {
 
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
+
+        http.cors(cors -> cors.configurationSource(corsConfig));
 
         http.addFilterAfter(new JwtValidatorFilter(jwtService), ExceptionTranslationFilter.class);
 
