@@ -32,7 +32,7 @@ public class ProductService implements ProductUseCase {
         Product prod = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with ID " + productId + " not found"));
 
-        return new ProductDTO(prod.getId() ,prod.getName(), prod.getFactoryName(), prod.getCategory().getName(), prod.getCategory().getId(),
+        return new ProductDTO(prod.getId() ,prod.getName(), prod.getFactoryName(),
                 prod.isGroupByWidth(), prod.isGroupByLength(), prod.isGroupByHeight(), prod.isGroupByColour(),
                 prod.getCreatedAt(), prod.getCreatedBy().getUsername());
 
@@ -47,8 +47,8 @@ public class ProductService implements ProductUseCase {
             throw new ResourceNotFoundException("No products found for category with ID " + categoryId);
         }
 
-        return products.map(p -> new ProductDTO(p.getId(), p.getName(), p.getFactoryName(), p.getCategory().getName(),
-                p.getCategory().getId(), p.isGroupByWidth(), p.isGroupByLength(), p.isGroupByHeight(), p.isGroupByColour(),
+        return products.map(p -> new ProductDTO(p.getId(), p.getName(), p.getFactoryName(),
+                p.isGroupByWidth(), p.isGroupByLength(), p.isGroupByHeight(), p.isGroupByColour(),
                 p.getCreatedAt(), p.getCreatedBy().getUsername()));
 
     }
