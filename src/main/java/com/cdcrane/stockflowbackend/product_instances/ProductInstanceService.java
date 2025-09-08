@@ -105,6 +105,10 @@ public class ProductInstanceService implements ProductInstanceUseCase {
 
         List<ProductInstance> instances = productInstanceRepo.findAll(spec);
 
+        if (instances.isEmpty()) {
+            throw new ResourceNotFoundException("No available instances found for product with ID " + rootProductId);
+        }
+
         return instances.stream()
                 .map(i ->
                         new ProductInstanceDTO(i.getId(), rootProductId, i.getWidth(), i.getLength(), i.getHeight(), i.getColour(), i.isReserved(), i.getSavedAt())

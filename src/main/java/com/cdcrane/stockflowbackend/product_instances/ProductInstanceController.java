@@ -35,7 +35,7 @@ public class ProductInstanceController {
 
     }
 
-    @GetMapping("/search-by-product-id/{rootProdId}")
+    @GetMapping("/search-by-product-id-and-available/{rootProdId}")
     public ResponseEntity<List<ProductInstanceDTO>> getProductInstancesByRootProductIdWithFilters(@PathVariable UUID rootProdId, @RequestParam(required = false) Integer width,
                                                                                                   @RequestParam(required = false) Integer length, @RequestParam(required = false) Integer height,
                                                                                                   @RequestParam(required = false) String colour) {
