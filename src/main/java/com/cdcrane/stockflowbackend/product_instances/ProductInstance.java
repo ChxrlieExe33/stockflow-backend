@@ -1,5 +1,6 @@
 package com.cdcrane.stockflowbackend.product_instances;
 
+import com.cdcrane.stockflowbackend.orders.Order;
 import com.cdcrane.stockflowbackend.products.Product;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,6 +29,10 @@ public class ProductInstance {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     private Integer width;
 
     private Integer length;
@@ -37,8 +42,6 @@ public class ProductInstance {
     private String colour;
 
     private boolean reserved;
-
-    // Add the FK to the product it could be reserved for.
 
     @CreatedDate
     private Instant savedAt;

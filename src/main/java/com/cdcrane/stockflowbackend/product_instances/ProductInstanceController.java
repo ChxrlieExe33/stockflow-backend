@@ -35,6 +35,16 @@ public class ProductInstanceController {
 
     }
 
+    @GetMapping("/search-by-product-id/{rootProdId}")
+    public ResponseEntity<List<ProductInstanceDTO>> getProductInstancesByRootProductIdWithFilters(@PathVariable UUID rootProdId, @RequestParam(required = false) Integer width,
+                                                                                                  @RequestParam(required = false) Integer length, @RequestParam(required = false) Integer height,
+                                                                                                  @RequestParam(required = false) String colour) {
+
+        var result = productInstanceUseCase.getProductInstancesByRootProductIdWithFilters(rootProdId, width, length, height, colour);
+
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/count-by-product/{productId}")
     public ResponseEntity<List<ProductInstanceCountDTO>> getCountsByProductId(@PathVariable UUID productId) {
 

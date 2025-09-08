@@ -5,12 +5,14 @@ import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.products.categories.Category;
 import com.cdcrane.stockflowbackend.products.dto.CreateProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductDTO;
+import com.cdcrane.stockflowbackend.products.dto.ProductSearchResultDTO;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -54,13 +56,26 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
+    public List<ProductSearchResultDTO> getFirst5ByStartOfName(String name) {
+
+        List<Product> products = productRepo.findFirst5ByNameStartingWith(name.toLowerCase());
+
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No products found for name starting with " + name);
+        }
+
+        return products.stream().map(p -> new ProductSearchResultDTO(p.getName(), p.getFactoryName())).toList();
+
+    }
+
+    @Override
     public void createProduct(CreateProductDTO dto) {
 
         ApplicationUser currentUser = securityUtils.getCurrentAuth();
 
         Product product = Product.builder()
                 .category(em.getReference(Category.class, dto.categoryId()))
-                .name(dto.name())
+                .name(dto.name().toLowerCase())
                 .factoryName(dto.factoryName())
                 .createdBy(currentUser)
                 .groupByColour(dto.groupByColour())

@@ -3,12 +3,14 @@ package com.cdcrane.stockflowbackend.product_instances;
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.product_instances.dto.NewProductInstanceDTO;
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceCountDTO;
+import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceDTO;
 import com.cdcrane.stockflowbackend.products.Product;
 import com.cdcrane.stockflowbackend.products.ProductRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,7 +53,7 @@ public class ProductInstanceService implements ProductInstanceUseCase {
                         .width(dto.width())
                         .length(dto.length())
                         .height(dto.height())
-                        .colour(dto.colour())
+                        .colour(dto.colour().toLowerCase())
                         .reserved(dto.reserved())
                         .build())
                 .toList();
@@ -85,6 +87,30 @@ public class ProductInstanceService implements ProductInstanceUseCase {
         }
 
         return counts;
+
+    }
+
+    @Override
+    public List<ProductInstanceDTO> getProductInstancesByRootProductIdWithFilters(UUID rootProductId, Integer width, Integer length, Integer height, String colour) {
+
+        String lowerCaseColour = colour == null ? null : colour.toLowerCase();
+
+        // Using a specification to build a query based on what parameters were provided, null parameters are not added to the final query.
+        Specification<ProductInstance> spec = ProductInstanceSpecifications.byRootProductId(rootProductId)
+                .and(ProductInstanceSpecifications.hasWidth(width))
+                .and(ProductInstanceSpecifications.hasLength(length))
+                .and(ProductInstanceSpecifications.hasHeight(height))
+                .and(ProductInstanceSpecifications.hasColour(lowerCaseColour))
+                .and(ProductInstanceSpecifications.byReserved(false));
+
+        List<ProductInstance> instances = productInstanceRepo.findAll(spec);
+
+        return instances.stream()
+                .map(i ->
+                        new ProductInstanceDTO(i.getId(), rootProductId, i.getWidth(), i.getLength(), i.getHeight(), i.getColour(), i.isReserved(), i.getSavedAt())
+                )
+                .toList();
+
 
     }
 
