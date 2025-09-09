@@ -1,6 +1,7 @@
 package com.cdcrane.stockflowbackend.orders;
 
 import com.cdcrane.stockflowbackend.product_instances.ProductInstance;
+import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -39,9 +40,14 @@ public class Order {
     private boolean delivered;
 
     @CreatedDate
+    @Column(updatable = false)
     private Instant orderedAt;
 
     @OneToMany
     @JoinColumn(name = "order_id")
     private List<ProductInstance> products;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private ApplicationUser salesPerson;
 }

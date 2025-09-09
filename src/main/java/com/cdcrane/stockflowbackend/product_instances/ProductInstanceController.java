@@ -5,6 +5,7 @@ import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceCountDT
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +61,7 @@ public class ProductInstanceController {
 
         productInstanceUseCase.storeNewProductInstances(productInstanceDTOs);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
 

@@ -1,9 +1,11 @@
 package com.cdcrane.stockflowbackend.product_instances;
 
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
+import com.cdcrane.stockflowbackend.orders.Order;
 import com.cdcrane.stockflowbackend.product_instances.dto.NewProductInstanceDTO;
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceCountDTO;
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceDTO;
+import com.cdcrane.stockflowbackend.product_instances.exceptions.ItemAlreadyReservedException;
 import com.cdcrane.stockflowbackend.products.Product;
 import com.cdcrane.stockflowbackend.products.ProductRepository;
 import jakarta.persistence.EntityManager;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -115,6 +118,33 @@ public class ProductInstanceService implements ProductInstanceUseCase {
                 )
                 .toList();
 
+
+    }
+
+    @Override
+    @Transactional
+    public void markInstanceAsReserved(List<UUID> instanceId, Order order) {
+
+        List<ProductInstance> instances = productInstanceRepo.findByIdIn(instanceId);
+
+        List<UUID> failedIds = new ArrayList<>();
+
+        for (ProductInstance i : instances) {
+
+            if (i.isReserved()) {
+                failedIds.add(i.getId());
+            }
+
+            i.setReserved(true);
+            i.setOrder(order);
+        }
+
+        if (!failedIds.isEmpty()) {
+
+            throw new ItemAlreadyReservedException("Product instances with the following IDs are already reserved, cannot continue with order: " + failedIds);
+        }
+
+        productInstanceRepo.saveAll(instances);
 
     }
 

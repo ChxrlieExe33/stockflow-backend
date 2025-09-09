@@ -39,6 +39,7 @@ public class Product {
     private boolean groupByColour;
 
     @CreatedDate
+    @Column(updatable = false)
     private Instant createdAt;
 
     @ManyToOne

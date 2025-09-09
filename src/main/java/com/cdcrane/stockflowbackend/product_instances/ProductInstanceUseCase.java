@@ -1,5 +1,6 @@
 package com.cdcrane.stockflowbackend.product_instances;
 
+import com.cdcrane.stockflowbackend.orders.Order;
 import com.cdcrane.stockflowbackend.product_instances.dto.NewProductInstanceDTO;
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceCountDTO;
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceDTO;
@@ -18,4 +19,6 @@ public interface ProductInstanceUseCase {
     List<ProductInstanceCountDTO> getCountsByProductId(UUID productId);
 
     List<ProductInstanceDTO> getProductInstancesByRootProductIdWithFilters(UUID rootProductId, Integer width, Integer length, Integer height, String colour);
+
+    void markInstanceAsReserved(List<UUID> instanceId, Order order);
 }

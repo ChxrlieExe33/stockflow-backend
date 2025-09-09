@@ -50,4 +50,6 @@ public interface ProductInstanceRepository extends JpaRepository<ProductInstance
     """)
     List<ProductInstanceCountDTO> getCountByProductIdGroupByColour(UUID productId);
 
+    List<ProductInstance> findByIdIn(List<UUID> ids);
+
 }

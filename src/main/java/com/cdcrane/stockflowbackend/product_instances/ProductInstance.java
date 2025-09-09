@@ -44,6 +44,7 @@ public class ProductInstance {
     private boolean reserved;
 
     @CreatedDate
+    @Column(updatable = false)
     private Instant savedAt;
 
 }
