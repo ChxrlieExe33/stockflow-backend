@@ -2,10 +2,13 @@ package com.cdcrane.stockflowbackend.orders;
 
 import com.cdcrane.stockflowbackend.orders.dto.CreateOrderDTO;
 import com.cdcrane.stockflowbackend.orders.dto.OrderDTO;
+import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -22,9 +25,7 @@ public class OrderController {
 
         Page<Order> orders = orderUseCase.getOrders(pageable ,orderBy);
 
-        var response = orders.map(o -> new OrderDTO(o.getId(), o.getReference(), o.getDeliveryDate(),
-                o.getDeliveryAddress(), o.getDeliveryPhoneNumber(), o.getExtraInformation(),
-                o.getOrderedAt(), o.getSalesPerson() != null ? o.getSalesPerson().getUsername() : "Unknown"));
+        var response = orders.map(this::mapOrderToOrderDto);
 
         return ResponseEntity.ok(response);
 
@@ -37,5 +38,25 @@ public class OrderController {
 
         return ResponseEntity.ok().build();
 
+    }
+
+    @PutMapping("/{orderId}")
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable UUID orderId, @RequestBody UpdateOrderDTO order) {
+
+        Order result = orderUseCase.updateOrder(orderId, order);
+
+        return ResponseEntity.ok(mapOrderToOrderDto(result));
+
+    }
+
+
+
+    // -------------------------------- HELPER METHODS --------------------------------
+
+    private OrderDTO mapOrderToOrderDto(Order order) {
+
+        return new OrderDTO(order.getId(), order.getReference(), order.getDeliveryDate(),
+                order.getDeliveryAddress(), order.getDeliveryPhoneNumber(), order.getExtraInformation(),
+                order.getOrderedAt(), order.getSalesPerson() != null ? order.getSalesPerson().getUsername() : "Unknown", order.isDelivered());
     }
 }

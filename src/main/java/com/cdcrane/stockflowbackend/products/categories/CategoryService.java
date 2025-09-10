@@ -1,6 +1,8 @@
 package com.cdcrane.stockflowbackend.products.categories;
 
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
+import com.cdcrane.stockflowbackend.products.categories.dto.CreateCategoryDTO;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,18 @@ public class CategoryService implements CategoryUseCase{
         }
 
         return categories;
+
+    }
+
+    @Override
+    @Transactional
+    public void createCategory(CreateCategoryDTO category) {
+
+        Category newCategory = Category.builder()
+                .name(category.categoryName())
+                .build();
+
+        categoryRepo.save(newCategory);
 
     }
 }

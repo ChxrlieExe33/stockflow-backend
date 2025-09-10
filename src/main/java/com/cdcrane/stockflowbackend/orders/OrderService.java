@@ -3,12 +3,15 @@ package com.cdcrane.stockflowbackend.orders;
 import com.cdcrane.stockflowbackend.authentication.SecurityUtils;
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.orders.dto.CreateOrderDTO;
+import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderDTO;
 import com.cdcrane.stockflowbackend.product_instances.ProductInstanceUseCase;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class OrderService implements OrderUseCase {
@@ -71,6 +74,24 @@ public class OrderService implements OrderUseCase {
         Order saved = orderRepo.save(newOrder);
 
         productInstanceUseCase.markInstanceAsReserved(order.productInstanceIds(), saved);
+
+    }
+
+    @Override
+    @Transactional
+    public Order updateOrder(UUID orderId, UpdateOrderDTO dto) {
+
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with ID " + orderId + " not found"));
+
+        order.setReference(dto.reference());
+        order.setDeliveryDate(dto.deliveryDate());
+        order.setDeliveryAddress(dto.deliveryAddress());
+        order.setDeliveryPhoneNumber(dto.deliveryPhoneNumber());
+        order.setExtraInformation(dto.extraInformation());
+        order.setDelivered(dto.delivered());
+
+        return orderRepo.save(order);
 
     }
 

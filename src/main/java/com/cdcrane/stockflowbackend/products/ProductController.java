@@ -2,6 +2,7 @@ package com.cdcrane.stockflowbackend.products;
 
 import com.cdcrane.stockflowbackend.products.categories.CategoryUseCase;
 import com.cdcrane.stockflowbackend.products.categories.dto.CategoryDTO;
+import com.cdcrane.stockflowbackend.products.categories.dto.CreateCategoryDTO;
 import com.cdcrane.stockflowbackend.products.dto.CreateProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductSearchResultDTO;
@@ -26,6 +27,10 @@ public class ProductController {
         this.categoryUseCase = categoryUseCase;
     }
 
+    // ------------------------------------------------------------------------
+    // ------------------------------- PRODUCTS -------------------------------
+    // ------------------------------------------------------------------------
+
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable UUID productId) {
 
@@ -39,15 +44,6 @@ public class ProductController {
     public ResponseEntity<Page<ProductDTO>> getByCategoryId(@PathVariable UUID categoryId, Pageable pageable) {
 
         var response = productUseCase.getByCategoryId(categoryId, pageable);
-
-        return ResponseEntity.ok(response);
-
-    }
-
-    @GetMapping("/categories")
-    public ResponseEntity<Page<CategoryDTO>> getAllCategories(Pageable pageable) {
-
-        var response = categoryUseCase.getAllCategories(pageable).map(c -> new CategoryDTO(c.getId(), c.getName()));
 
         return ResponseEntity.ok(response);
 
@@ -69,4 +65,28 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+
+    // ------------------------------------------------------------------------
+    // ------------------------------- CATEGORIES -----------------------------
+    // ------------------------------------------------------------------------
+
+    @GetMapping("/categories")
+    public ResponseEntity<Page<CategoryDTO>> getAllCategories(Pageable pageable) {
+
+        var response = categoryUseCase.getAllCategories(pageable).map(c -> new CategoryDTO(c.getId(), c.getName()));
+
+        return ResponseEntity.ok(response);
+
+    }
+
+    @PostMapping("/categories")
+    public ResponseEntity<Void> createCategory(@RequestBody CreateCategoryDTO category) {
+
+        categoryUseCase.createCategory(category);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+
 }
