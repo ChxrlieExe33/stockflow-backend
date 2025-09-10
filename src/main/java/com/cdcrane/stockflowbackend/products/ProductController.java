@@ -1,5 +1,7 @@
 package com.cdcrane.stockflowbackend.products;
 
+import com.cdcrane.stockflowbackend.products.categories.CategoryUseCase;
+import com.cdcrane.stockflowbackend.products.categories.dto.CategoryDTO;
 import com.cdcrane.stockflowbackend.products.dto.CreateProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductSearchResultDTO;
@@ -17,9 +19,11 @@ import java.util.UUID;
 public class ProductController {
 
     private final ProductUseCase productUseCase;
+    private final CategoryUseCase categoryUseCase;
 
-    public ProductController(ProductUseCase productUseCase) {
+    public ProductController(ProductUseCase productUseCase, CategoryUseCase categoryUseCase) {
         this.productUseCase = productUseCase;
+        this.categoryUseCase = categoryUseCase;
     }
 
     @GetMapping("/{productId}")
@@ -35,6 +39,15 @@ public class ProductController {
     public ResponseEntity<Page<ProductDTO>> getByCategoryId(@PathVariable UUID categoryId, Pageable pageable) {
 
         var response = productUseCase.getByCategoryId(categoryId, pageable);
+
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<Page<CategoryDTO>> getAllCategories(Pageable pageable) {
+
+        var response = categoryUseCase.getAllCategories(pageable).map(c -> new CategoryDTO(c.getId(), c.getName()));
 
         return ResponseEntity.ok(response);
 
