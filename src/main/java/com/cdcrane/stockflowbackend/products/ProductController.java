@@ -66,6 +66,24 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable UUID productId, @RequestBody CreateProductDTO product) {
+
+        Product result = productUseCase.updateProduct(productId, product);
+
+        return ResponseEntity.ok(mapProductToProductDto(result));
+
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
+
+        productUseCase.deleteProduct(productId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+    }
+
 
     // ------------------------------------------------------------------------
     // ------------------------------- CATEGORIES -----------------------------
@@ -87,6 +105,18 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
+    }
+
+
+    // --------------------------------------------------------------------------------
+    // -------------------------------- HELPER METHODS --------------------------------
+    // --------------------------------------------------------------------------------
+
+    private ProductDTO mapProductToProductDto(Product product) {
+
+        return new ProductDTO(product.getId(), product.getName(), product.getFactoryName(),
+                product.isGroupByWidth(), product.isGroupByLength(), product.isGroupByHeight(), product.isGroupByColour(),
+                product.getCreatedAt(), product.getCreatedBy().getUsername());
     }
 
 }

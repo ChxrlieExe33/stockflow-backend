@@ -20,14 +20,14 @@ Instances of a specific furniture unit will be grouped simply by colour, since t
 
 - Query information about a root product **DONE**
 - Add a new root product **DONE**
-- Update root products
-- Delete root products
+- Update root products **DONE**
+- Delete root products **DONE**
 
 # Categories
 
 - Query all categories paginated **DONE**
 - Create new categories **DONE**
-- Update categories
+- Update categories **DONE**
 - Delete categories
 
 # Users
@@ -43,3 +43,7 @@ Instances of a specific furniture unit will be grouped simply by colour, since t
 - Query orders **DONE BASIC QUERYING**
 - Update order status and/or information
 - Delete orders (if necessary)
+
+# Configuration
+
+- Have some sort of setup phase when the application is first "installed" to create the first admin user and choose the company name, amongst other details.

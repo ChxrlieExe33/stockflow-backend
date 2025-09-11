@@ -1,5 +1,6 @@
 package com.cdcrane.stockflowbackend.products;
 
+import com.cdcrane.stockflowbackend.product_instances.ProductInstance;
 import com.cdcrane.stockflowbackend.products.categories.Category;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -49,4 +51,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private ApplicationUser createdBy;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "product_id")
+    private List<ProductInstance> productInstances;
 }

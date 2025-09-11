@@ -18,4 +18,8 @@ public interface ProductUseCase {
     List<ProductSearchResultDTO> getFirst5ByStartOfName(String name);
 
     void createProduct(CreateProductDTO product);
+
+    Product updateProduct(UUID productId, CreateProductDTO product);
+
+    void deleteProduct(UUID productId);
 }

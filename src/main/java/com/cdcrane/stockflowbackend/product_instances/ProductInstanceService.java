@@ -56,7 +56,7 @@ public class ProductInstanceService implements ProductInstanceUseCase {
                         .width(dto.width())
                         .length(dto.length())
                         .height(dto.height())
-                        .colour(dto.colour().toLowerCase())
+                        .colour(dto.colour() == null ? null : dto.colour().toLowerCase())
                         .reserved(dto.reserved())
                         .build())
                 .toList();
