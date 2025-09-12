@@ -11,6 +11,8 @@ public interface UserRepository extends JpaRepository<ApplicationUser, UUID> {
 
     ApplicationUser findByUsername(String username);
 
-    @Query("SELECT u FROM ApplicationUser u JOIN FETCH u.roles")
+    @Query("SELECT u FROM ApplicationUser u JOIN FETCH u.roles WHERE u.username = ?1")
     ApplicationUser findByUsernameWithRoles(String username);
+
+    Boolean existsByUsername(String username);
 }

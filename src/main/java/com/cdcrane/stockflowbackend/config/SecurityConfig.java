@@ -6,6 +6,7 @@ import com.cdcrane.stockflowbackend.config.exception_handlers.CustomAuthEntryPoi
 import com.cdcrane.stockflowbackend.config.filters.JwtValidatorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,18 +38,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers(PUBLIC_URIS).permitAll() // Permitted or specific routes first.
-                .anyRequest().authenticated()); // .anyRequest always goes last.
+                .requestMatchers(PUBLIC_URIS).permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAuthority("ADMIN")
+                .anyRequest().authenticated());
 
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
 
+        http.exceptionHandling(ehc -> ehc.authenticationEntryPoint(new CustomAuthEntryPoint()));
+        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
+
         http.cors(cors -> cors.configurationSource(corsConfig));
 
         http.addFilterAfter(new JwtValidatorFilter(jwtService), ExceptionTranslationFilter.class);
-
-        http.exceptionHandling(ehc -> ehc.authenticationEntryPoint(new CustomAuthEntryPoint()));
-        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

@@ -3,6 +3,8 @@ package com.cdcrane.stockflowbackend.config.exception_handlers;
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.config.responses.ExceptionErrorResponse;
 import com.cdcrane.stockflowbackend.product_instances.exceptions.ItemAlreadyReservedException;
+import com.cdcrane.stockflowbackend.roles.exceptions.RoleDoesntExistException;
+import com.cdcrane.stockflowbackend.users.exceptions.CannotCreateUserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,5 +65,33 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 
+    }
+
+    @ExceptionHandler(RoleDoesntExistException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleRoleDoesntExistException(RoleDoesntExistException ex) {
+
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.CONFLICT.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+
+        log.warn("Action failed because a role doesn't exist: {}", ex.getMessage() + ".");
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(CannotCreateUserException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleCannotCreateUserException(CannotCreateUserException ex) {
+
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.CONFLICT.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+
+        log.warn("User creation failed because : {}", ex.getMessage() + ".");
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }
