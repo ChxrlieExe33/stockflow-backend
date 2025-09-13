@@ -5,6 +5,7 @@ import com.cdcrane.stockflowbackend.orders.dto.OrderDTO;
 import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class OrderController {
 
         orderUseCase.createOrder(order);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
 
@@ -46,6 +47,15 @@ public class OrderController {
         Order result = orderUseCase.updateOrder(orderId, order);
 
         return ResponseEntity.ok(mapOrderToOrderDto(result));
+
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable UUID orderId) {
+
+        orderUseCase.deleteOrder(orderId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
 

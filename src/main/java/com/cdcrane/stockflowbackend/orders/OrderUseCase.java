@@ -15,4 +15,6 @@ public interface OrderUseCase {
 
     Order updateOrder(UUID orderId, UpdateOrderDTO order);
 
+    void deleteOrder(UUID orderId);
+
 }

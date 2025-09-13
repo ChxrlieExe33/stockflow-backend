@@ -33,7 +33,7 @@ Instances of a specific furniture unit will be grouped simply by colour, since t
 # Users
 
 - Authentication with a username and password, which returns a JWT to the user **DONE**
-- Registration of new users, done only by administrator users
+- Registration of new users, done only by administrator users **DONE**
 - Updating user details.
 - Delete user accounts.
 
@@ -41,7 +41,7 @@ Instances of a specific furniture unit will be grouped simply by colour, since t
 
 - Save a new client order and mark all instances used for it as reserved **DONE**
 - Query orders **DONE BASIC QUERYING**
-- Update order status and/or information
+- Update order status and/or information **DONE**
 - Delete orders (if necessary)
 
 # Configuration

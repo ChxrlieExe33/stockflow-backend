@@ -43,7 +43,7 @@ public class Order {
     @Column(updatable = false)
     private Instant orderedAt;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "order_id")
     private List<ProductInstance> products;
 

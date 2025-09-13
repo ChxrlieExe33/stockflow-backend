@@ -95,4 +95,17 @@ public class OrderService implements OrderUseCase {
 
     }
 
+    @Override
+    @Transactional
+    public void deleteOrder(UUID orderId) {
+
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with ID " + orderId + " not found, cannot delete."));
+
+        // Cascade remove will handle deleting all associated product instances from the table.
+
+        orderRepo.delete(order);
+
+    }
+
 }
