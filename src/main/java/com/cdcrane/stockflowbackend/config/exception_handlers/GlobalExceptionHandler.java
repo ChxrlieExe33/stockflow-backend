@@ -1,5 +1,6 @@
 package com.cdcrane.stockflowbackend.config.exception_handlers;
 
+import com.cdcrane.stockflowbackend.authentication.exceptions.BadLoginException;
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.config.responses.ExceptionErrorResponse;
 import com.cdcrane.stockflowbackend.product_instances.exceptions.ItemAlreadyReservedException;
@@ -93,5 +94,19 @@ public class GlobalExceptionHandler {
         log.warn("User creation failed because : {}", ex.getMessage() + ".");
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(BadLoginException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleBadLoginException(BadLoginException ex) {
+
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+
+        log.warn("Login failed because : {}", ex.getMessage() + ".");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }

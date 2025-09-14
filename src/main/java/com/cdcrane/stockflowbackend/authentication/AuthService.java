@@ -2,11 +2,9 @@ package com.cdcrane.stockflowbackend.authentication;
 
 import com.cdcrane.stockflowbackend.authentication.dto.JwtData;
 import com.cdcrane.stockflowbackend.authentication.dto.LoginResponseDTO;
+import com.cdcrane.stockflowbackend.authentication.exceptions.BadLoginException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -43,7 +41,7 @@ public class AuthService implements AuthUseCase{
 
             log.warn("Authentication failed for user {}", username);
 
-            throw new BadCredentialsException("Invalid username or password provided.");
+            throw new BadLoginException("Invalid username or password provided.");
 
         }
 
