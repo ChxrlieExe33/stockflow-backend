@@ -16,6 +16,14 @@ Instances of a specific furniture unit will be grouped simply by colour, since t
 - Save new instances by receiving a collection of instances. **DONE**
 - When a new client order is saved, all instances that that order has claimed will be marked as reserved and provided the order ID. **DONE**
 
+# On order instances
+
+- This is to account for the fact some product instances for a client order may need to be ordered from the factory; it will be very similar to the instances table, but only for products on order.
+- When a client order is created, if it had any items to be ordered, add them here.
+- Retrieve a list of all ordered instances.
+- When they arrive, have an endpoint to mark them as received and possibly move them to the main product instances table.
+
+
 # Root products
 
 - Query information about a root product **DONE**
@@ -40,6 +48,7 @@ Instances of a specific furniture unit will be grouped simply by colour, since t
 # Orders (Client orders)
 
 - Save a new client order and mark all instances used for it as reserved **DONE**
+- Provide the option on order creation to take product instances "on order" as part of the sale.
 - Query orders **DONE BASIC QUERYING**
 - Update order status and/or information **DONE**
 - Delete orders (if necessary) **DONE**

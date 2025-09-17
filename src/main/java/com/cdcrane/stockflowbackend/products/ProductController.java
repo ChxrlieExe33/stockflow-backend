@@ -98,6 +98,15 @@ public class ProductController {
 
     }
 
+    @GetMapping("/categories/{categoryId}")
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable UUID categoryId) {
+
+        var response = categoryUseCase.getCategoryById(categoryId);
+
+        return ResponseEntity.ok(new CategoryDTO(response.getId(), response.getName()));
+
+    }
+
     @PostMapping("/categories")
     public ResponseEntity<Void> createCategory(@RequestBody CreateCategoryDTO category) {
 

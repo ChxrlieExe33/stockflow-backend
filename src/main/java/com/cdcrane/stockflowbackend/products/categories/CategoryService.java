@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class CategoryService implements CategoryUseCase{
 
@@ -26,6 +28,14 @@ public class CategoryService implements CategoryUseCase{
         }
 
         return categories;
+
+    }
+
+    @Override
+    public Category getCategoryById(UUID categoryId) {
+
+        return categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with ID " + categoryId + " not found"));
 
     }
 
