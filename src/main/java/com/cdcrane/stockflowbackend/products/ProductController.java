@@ -8,6 +8,7 @@ import com.cdcrane.stockflowbackend.products.dto.ProductDTO;
 import com.cdcrane.stockflowbackend.products.dto.ProductSearchResultDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class ProductController {
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<Page<ProductDTO>> getByCategoryId(@PathVariable UUID categoryId, Pageable pageable) {
+    public ResponseEntity<Page<ProductDTO>> getByCategoryId(@PathVariable UUID categoryId, @PageableDefault(size = 10) Pageable pageable) {
 
         var response = productUseCase.getByCategoryId(categoryId, pageable);
 
@@ -90,7 +91,7 @@ public class ProductController {
     // ------------------------------------------------------------------------
 
     @GetMapping("/categories")
-    public ResponseEntity<Page<CategoryDTO>> getAllCategories(Pageable pageable) {
+    public ResponseEntity<Page<CategoryDTO>> getAllCategories(@PageableDefault(size = 10) Pageable pageable) {
 
         var response = categoryUseCase.getAllCategories(pageable).map(c -> new CategoryDTO(c.getId(), c.getName()));
 
