@@ -13,4 +13,6 @@ public interface CategoryUseCase {
     Category getCategoryById(UUID categoryId);
 
     void createCategory(CreateCategoryDTO category);
+
+    Category updateCategory(UUID categoryId, String categoryName);
 }

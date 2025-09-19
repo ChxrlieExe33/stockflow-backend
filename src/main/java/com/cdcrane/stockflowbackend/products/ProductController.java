@@ -1,5 +1,6 @@
 package com.cdcrane.stockflowbackend.products;
 
+import com.cdcrane.stockflowbackend.products.categories.Category;
 import com.cdcrane.stockflowbackend.products.categories.CategoryUseCase;
 import com.cdcrane.stockflowbackend.products.categories.dto.CategoryDTO;
 import com.cdcrane.stockflowbackend.products.categories.dto.CreateCategoryDTO;
@@ -114,6 +115,15 @@ public class ProductController {
         categoryUseCase.createCategory(category);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+
+    @PutMapping("/categories/{categoryId}")
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable UUID categoryId, @RequestBody CreateCategoryDTO category) {
+
+        Category updated = categoryUseCase.updateCategory(categoryId, category.categoryName());
+
+        return ResponseEntity.ok(new CategoryDTO(updated.getId(), updated.getName()));
 
     }
 

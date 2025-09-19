@@ -50,4 +50,16 @@ public class CategoryService implements CategoryUseCase{
         categoryRepo.save(newCategory);
 
     }
+
+    @Override
+    public Category updateCategory(UUID categoryId, String categoryName) {
+
+        Category category = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with ID " + categoryId + " not found"));
+
+        category.setName(categoryName);
+
+        return categoryRepo.save(category);
+
+    }
 }
