@@ -11,6 +11,7 @@ import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -60,9 +61,9 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public List<ProductSearchResultDTO> getFirst5ByStartOfName(String name) {
+    public List<ProductSearchResultDTO> searchByName(String name) {
 
-        List<Product> products = productRepo.findFirst5ByNameStartingWith(name.toLowerCase());
+        List<Product> products = productRepo.searchByName(name, PageRequest.of(0, 5));
 
         if (products.isEmpty()) {
             throw new ResourceNotFoundException("No products found for name starting with " + name);

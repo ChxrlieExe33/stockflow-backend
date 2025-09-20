@@ -52,9 +52,9 @@ public class ProductController {
     }
 
     @GetMapping("/search-summary/{name}")
-    public ResponseEntity<List<ProductSearchResultDTO>> getFirst5ByStartOfName(@PathVariable String name) {
+    public ResponseEntity<List<ProductSearchResultDTO>> searchByName(@PathVariable String name) {
 
-        var response = productUseCase.getFirst5ByStartOfName(name);
+        var response = productUseCase.searchByName(name);
 
         return ResponseEntity.ok(response);
 
@@ -108,6 +108,16 @@ public class ProductController {
         return ResponseEntity.ok(new CategoryDTO(response.getId(), response.getName()));
 
     }
+
+    @GetMapping("/categories/search/{name}")
+    public ResponseEntity<List<CategoryDTO>> searchCategoriesByName(@PathVariable String name) {
+
+        var response = categoryUseCase.searchCategoriesByName(name);
+
+        return ResponseEntity.ok(response.stream().map(c -> new CategoryDTO(c.getId(), c.getName())).toList());
+
+    }
+
 
     @PostMapping("/categories")
     public ResponseEntity<Void> createCategory(@RequestBody CreateCategoryDTO category) {

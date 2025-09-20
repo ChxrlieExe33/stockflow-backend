@@ -4,9 +4,11 @@ import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.products.categories.dto.CreateCategoryDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -60,6 +62,14 @@ public class CategoryService implements CategoryUseCase{
         category.setName(categoryName);
 
         return categoryRepo.save(category);
+
+    }
+
+    @Override
+    public List<Category> searchCategoriesByName(String name) {
+
+        // Get top 5
+        return categoryRepo.searchByName(name, PageRequest.of(0, 5));
 
     }
 }

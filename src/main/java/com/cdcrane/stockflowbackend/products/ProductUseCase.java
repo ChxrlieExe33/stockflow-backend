@@ -15,7 +15,7 @@ public interface ProductUseCase {
 
     Page<ProductDTO> getByCategoryId(UUID categoryId, Pageable pageable);
 
-    List<ProductSearchResultDTO> getFirst5ByStartOfName(String name);
+    List<ProductSearchResultDTO> searchByName(String name);
 
     void createProduct(CreateProductDTO product);
 
