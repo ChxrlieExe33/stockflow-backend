@@ -66,10 +66,10 @@ public class ProductService implements ProductUseCase {
         List<Product> products = productRepo.searchByName(name, PageRequest.of(0, 5));
 
         if (products.isEmpty()) {
-            throw new ResourceNotFoundException("No products found for name starting with " + name);
+            throw new ResourceNotFoundException("No products found with name including " + "'" + name + "'.");
         }
 
-        return products.stream().map(p -> new ProductSearchResultDTO(p.getName(), p.getFactoryName())).toList();
+        return products.stream().map(p -> new ProductSearchResultDTO(p.getName(), p.getFactoryName(), p.getId())).toList();
 
     }
 
