@@ -160,7 +160,7 @@ public class ProductInstanceService implements ProductInstanceUseCase {
 
         for (ProductInstance i : instances) {
 
-            if (!i.isReserved() || i.getOrder().getId() != order.getId()) {
+            if (!i.isReserved() || !i.getOrder().getId().equals(order.getId())) {
                 failedIds.add(i.getId());
                 continue;
             }

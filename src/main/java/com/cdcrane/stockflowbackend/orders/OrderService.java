@@ -110,8 +110,15 @@ public class OrderService implements OrderUseCase {
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order with ID " + orderId + " not found, cannot update order products."));
 
-        productInstanceUseCase.markInstanceAsUnreserved(productInstanceIds.toRemoveProductInstanceIds(), order);
-        productInstanceUseCase.markInstanceAsReserved(productInstanceIds.toAddProductInstanceIds(), order);
+        if(!productInstanceIds.toAddProductInstanceIds().isEmpty()) {
+
+            productInstanceUseCase.markInstanceAsReserved(productInstanceIds.toAddProductInstanceIds(), order);
+        }
+
+        if(!productInstanceIds.toRemoveProductInstanceIds().isEmpty()) {
+            productInstanceUseCase.markInstanceAsUnreserved(productInstanceIds.toRemoveProductInstanceIds(), order);
+        }
+
 
     }
 
