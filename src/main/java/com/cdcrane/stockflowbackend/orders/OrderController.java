@@ -1,9 +1,6 @@
 package com.cdcrane.stockflowbackend.orders;
 
-import com.cdcrane.stockflowbackend.orders.dto.CreateOrderDTO;
-import com.cdcrane.stockflowbackend.orders.dto.OrderDTO;
-import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderDTO;
-import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderProductsDTO;
+import com.cdcrane.stockflowbackend.orders.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -11,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -40,6 +38,15 @@ public class OrderController {
         Order order = orderUseCase.getOrderById(orderId);
 
         return ResponseEntity.ok(mapOrderToOrderDto(order));
+
+    }
+
+    @GetMapping("/products/{orderId}")
+    public ResponseEntity<List<OrderProductInstanceProjection>> getOrderProductInstances(@PathVariable UUID orderId) {
+
+        var result = orderUseCase.getOrderProductInstances(orderId);
+
+        return ResponseEntity.ok(result);
 
     }
 

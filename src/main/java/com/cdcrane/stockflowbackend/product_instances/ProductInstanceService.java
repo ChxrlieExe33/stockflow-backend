@@ -123,6 +123,19 @@ public class ProductInstanceService implements ProductInstanceUseCase {
     }
 
     @Override
+    public List<ProductInstance> getProductInstancesReservedByOrder(Order order) {
+
+        var instances = productInstanceRepo.findByOrderId(order.getId());
+
+        if (instances.isEmpty()) {
+            throw new ResourceNotFoundException("No instances reserved for order with ID " + order.getId());
+        }
+
+        return instances;
+
+    }
+
+    @Override
     @Transactional
     public void markInstanceAsReserved(List<UUID> instanceId, Order order) {
 

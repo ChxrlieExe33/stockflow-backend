@@ -3,8 +3,10 @@ package com.cdcrane.stockflowbackend.orders;
 import com.cdcrane.stockflowbackend.authentication.SecurityUtils;
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.orders.dto.CreateOrderDTO;
+import com.cdcrane.stockflowbackend.orders.dto.OrderProductInstanceProjection;
 import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderDTO;
 import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderProductsDTO;
+import com.cdcrane.stockflowbackend.product_instances.ProductInstance;
 import com.cdcrane.stockflowbackend.product_instances.ProductInstanceUseCase;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.transaction.Transactional;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -62,6 +65,20 @@ public class OrderService implements OrderUseCase {
 
         return orderRepo.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order with ID " + orderId + " not found"));
+
+    }
+
+    @Override
+    public List<OrderProductInstanceProjection> getOrderProductInstances(UUID orderId) {
+
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with ID " + orderId + " not found"));
+
+        List<ProductInstance> instances = productInstanceUseCase.getProductInstancesReservedByOrder(order);
+
+        return instances.stream()
+                .map(i -> new OrderProductInstanceProjection(i.getId(), i.getProduct().getName(), i.getWidth(), i.getLength(), i.getHeight(), i.getColour()))
+                .toList();
 
     }
 

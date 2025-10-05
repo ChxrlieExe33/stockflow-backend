@@ -52,4 +52,7 @@ public interface ProductInstanceRepository extends JpaRepository<ProductInstance
 
     List<ProductInstance> findByIdIn(List<UUID> ids);
 
+
+    List<ProductInstance> findByOrderId(UUID orderId);
+
 }
