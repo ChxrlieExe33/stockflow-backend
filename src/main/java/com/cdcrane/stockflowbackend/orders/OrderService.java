@@ -4,6 +4,7 @@ import com.cdcrane.stockflowbackend.authentication.SecurityUtils;
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.orders.dto.CreateOrderDTO;
 import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderDTO;
+import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderProductsDTO;
 import com.cdcrane.stockflowbackend.product_instances.ProductInstanceUseCase;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
 import jakarta.transaction.Transactional;
@@ -57,6 +58,14 @@ public class OrderService implements OrderUseCase {
     }
 
     @Override
+    public Order getOrderById(UUID orderId) {
+
+        return orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with ID " + orderId + " not found"));
+
+    }
+
+    @Override
     @Transactional
     public void createOrder(CreateOrderDTO order) {
 
@@ -92,6 +101,17 @@ public class OrderService implements OrderUseCase {
         order.setDelivered(dto.delivered());
 
         return orderRepo.save(order);
+
+    }
+
+    @Override
+    public void updateOrderProductInstances(UUID orderId, UpdateOrderProductsDTO productInstanceIds) {
+
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with ID " + orderId + " not found, cannot update order products."));
+
+        productInstanceUseCase.markInstanceAsUnreserved(productInstanceIds.toRemoveProductInstanceIds(), order);
+        productInstanceUseCase.markInstanceAsReserved(productInstanceIds.toAddProductInstanceIds(), order);
 
     }
 

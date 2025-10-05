@@ -3,6 +3,7 @@ package com.cdcrane.stockflowbackend.orders;
 import com.cdcrane.stockflowbackend.orders.dto.CreateOrderDTO;
 import com.cdcrane.stockflowbackend.orders.dto.OrderDTO;
 import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderDTO;
+import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderProductsDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -33,6 +34,15 @@ public class OrderController {
 
     }
 
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable UUID orderId) {
+
+        Order order = orderUseCase.getOrderById(orderId);
+
+        return ResponseEntity.ok(mapOrderToOrderDto(order));
+
+    }
+
     @PostMapping
     public ResponseEntity<Void> createOrder(@RequestBody CreateOrderDTO order) {
 
@@ -43,11 +53,26 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable UUID orderId, @RequestBody UpdateOrderDTO order) {
+    public ResponseEntity<OrderDTO> updateOrderInformation(@PathVariable UUID orderId, @RequestBody UpdateOrderDTO order) {
 
         Order result = orderUseCase.updateOrder(orderId, order);
 
         return ResponseEntity.ok(mapOrderToOrderDto(result));
+
+    }
+
+    /**
+     * To add and remove product instances from a sale.
+     * @param orderId The order to update.
+     * @param instances The DTO containing the IDS of the products.
+     * @return A void response.
+     */
+    @PutMapping("/instances/{orderId}")
+    public ResponseEntity<Void> removeItemsFromOrder(@PathVariable UUID orderId, @RequestBody UpdateOrderProductsDTO instances) {
+
+        orderUseCase.updateOrderProductInstances(orderId, instances);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
 

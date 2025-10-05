@@ -6,6 +6,7 @@ import com.cdcrane.stockflowbackend.product_instances.dto.NewProductInstanceDTO;
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceCountDTO;
 import com.cdcrane.stockflowbackend.product_instances.dto.ProductInstanceDTO;
 import com.cdcrane.stockflowbackend.product_instances.exceptions.ItemAlreadyReservedException;
+import com.cdcrane.stockflowbackend.product_instances.exceptions.ItemsDoNotBelongToSaleException;
 import com.cdcrane.stockflowbackend.products.Product;
 import com.cdcrane.stockflowbackend.products.ProductRepository;
 import jakarta.persistence.EntityManager;
@@ -133,6 +134,7 @@ public class ProductInstanceService implements ProductInstanceUseCase {
 
             if (i.isReserved()) {
                 failedIds.add(i.getId());
+                continue;
             }
 
             i.setReserved(true);
@@ -141,7 +143,34 @@ public class ProductInstanceService implements ProductInstanceUseCase {
 
         if (!failedIds.isEmpty()) {
 
-            throw new ItemAlreadyReservedException("Product instances with the following IDs are already reserved, cannot continue with order: " + failedIds);
+            throw new ItemAlreadyReservedException("Product instances with the following IDs are already reserved, cannot continue: " + failedIds);
+        }
+
+        productInstanceRepo.saveAll(instances);
+
+    }
+
+    @Override
+    @Transactional
+    public void markInstanceAsUnreserved(List<UUID> instanceIds, Order order) {
+
+        List<ProductInstance> instances = productInstanceRepo.findByIdIn(instanceIds);
+
+        List<UUID> failedIds = new ArrayList<>();
+
+        for (ProductInstance i : instances) {
+
+            if (!i.isReserved() || i.getOrder().getId() != order.getId()) {
+                failedIds.add(i.getId());
+                continue;
+            }
+
+            i.setReserved(false);
+            i.setOrder(null);
+        }
+
+        if (!failedIds.isEmpty()) {
+            throw new ItemsDoNotBelongToSaleException("Product instances with the following IDs are not reserved for order with ID " + order.getId() + ", cannot continue : " + failedIds);
         }
 
         productInstanceRepo.saveAll(instances);

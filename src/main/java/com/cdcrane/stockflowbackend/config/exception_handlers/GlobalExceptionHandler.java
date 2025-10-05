@@ -4,6 +4,7 @@ import com.cdcrane.stockflowbackend.authentication.exceptions.BadLoginException;
 import com.cdcrane.stockflowbackend.config.exceptions.ResourceNotFoundException;
 import com.cdcrane.stockflowbackend.config.responses.ExceptionErrorResponse;
 import com.cdcrane.stockflowbackend.product_instances.exceptions.ItemAlreadyReservedException;
+import com.cdcrane.stockflowbackend.product_instances.exceptions.ItemsDoNotBelongToSaleException;
 import com.cdcrane.stockflowbackend.roles.exceptions.RoleDoesntExistException;
 import com.cdcrane.stockflowbackend.users.exceptions.CannotCreateUserException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,21 @@ public class GlobalExceptionHandler {
                 .build();
 
         log.warn("Save new order failed because items were already reserved: {}", ex.getMessage() + ".");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+
+    }
+
+    @ExceptionHandler(ItemsDoNotBelongToSaleException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleItemsDoNotBelongToSaleException(ItemsDoNotBelongToSaleException ex) {
+
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+
+        log.warn("Update order products failed because some items did not belong to the indicated order: {}", ex.getMessage() + ".");
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 

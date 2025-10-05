@@ -21,4 +21,6 @@ public interface ProductInstanceUseCase {
     List<ProductInstanceDTO> getProductInstancesByRootProductIdWithFilters(UUID rootProductId, Integer width, Integer length, Integer height, String colour);
 
     void markInstanceAsReserved(List<UUID> instanceId, Order order);
+
+    void markInstanceAsUnreserved(List<UUID> instanceIds, Order order);
 }

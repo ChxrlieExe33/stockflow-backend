@@ -11,10 +11,10 @@ import java.util.UUID;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
 
-    @Query("SELECT o FROM Order o WHERE o.delivered = false ORDER BY o.deliveryDate DESC")
+    @Query("SELECT o FROM Order o WHERE o.delivered = false ORDER BY o.deliveryDate ASC")
     Page<Order> getUndeliveredOrdersOrderByDeliveryDate(Pageable pageable);
 
-    @Query("SELECT o FROM Order o WHERE o.delivered = false ORDER BY o.orderedAt DESC")
+    @Query("SELECT o FROM Order o WHERE o.delivered = false ORDER BY o.orderedAt ASC")
     Page<Order> getUndeliveredOrdersOrderByOrderedAt(Pageable pageable);
 
 
