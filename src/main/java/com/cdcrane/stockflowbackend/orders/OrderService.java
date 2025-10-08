@@ -6,6 +6,7 @@ import com.cdcrane.stockflowbackend.orders.dto.CreateOrderDTO;
 import com.cdcrane.stockflowbackend.orders.dto.OrderProductInstanceProjection;
 import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderDTO;
 import com.cdcrane.stockflowbackend.orders.dto.UpdateOrderProductsDTO;
+import com.cdcrane.stockflowbackend.orders.enums.OrderSortBy;
 import com.cdcrane.stockflowbackend.product_instances.ProductInstance;
 import com.cdcrane.stockflowbackend.product_instances.ProductInstanceUseCase;
 import com.cdcrane.stockflowbackend.users.ApplicationUser;
@@ -31,26 +32,12 @@ public class OrderService implements OrderUseCase {
     }
 
     @Override
-    public Page<Order> getOrders(Pageable pageable, String orderBy) {
+    public Page<Order> getOrders(Pageable pageable, OrderSortBy orderBy) {
 
-        Page<Order> orders;
-
-        if (orderBy == null) {
-            orderBy = "ordered";
-        }
-
-        if (orderBy.equals("delivery")) {
-
-            orders = orderRepo.getUndeliveredOrdersOrderByDeliveryDate(pageable);
-
-        } else if (orderBy.equals("ordered")) {
-
-            orders = orderRepo.getUndeliveredOrdersOrderByOrderedAt(pageable);
-
-        } else {
-
-            orders = orderRepo.getUndeliveredOrdersOrderByOrderedAt(pageable);
-        }
+        Page<Order> orders = switch (orderBy) {
+            case DELIVERY -> orderRepo.getUndeliveredOrdersOrderByDeliveryDate(pageable);
+            case ORDERED -> orderRepo.getUndeliveredOrdersOrderByOrderedAt(pageable);
+        };
 
         if (orders.isEmpty()) {
             throw new ResourceNotFoundException("No undelivered orders found");

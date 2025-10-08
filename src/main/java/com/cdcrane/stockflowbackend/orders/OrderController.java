@@ -1,6 +1,7 @@
 package com.cdcrane.stockflowbackend.orders;
 
 import com.cdcrane.stockflowbackend.orders.dto.*;
+import com.cdcrane.stockflowbackend.orders.enums.OrderSortBy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,7 +25,9 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<Page<OrderDTO>> getOrders(@RequestParam(required = false) String orderBy, @PageableDefault(size = 10) Pageable pageable) {
 
-        Page<Order> orders = orderUseCase.getOrders(pageable ,orderBy);
+        OrderSortBy order = OrderSortBy.fromString(orderBy);
+
+        Page<Order> orders = orderUseCase.getOrders(pageable ,order);
 
         var response = orders.map(this::mapOrderToOrderDto);
 
