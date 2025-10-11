@@ -1,5 +1,7 @@
 # StockFlow Backend
 
+<img src="new-stockflow.png" alt="StockFlow dashboard">
+
 StockFlow is an inventory management and order system, designed for a furniture shop.
 
 The backend is built using Java 24 with Spring Boot 3.5.5.
